@@ -13,6 +13,7 @@ dependencies = [
     "pydantic-settings>=2.0,<3",
     "numpy>=1.26,<3",
     "click>=8.0,<9",
+    "cryptography>=42.0,<45",
 ]
 
 [project.optional-dependencies]

@@ -14,6 +14,10 @@ class MarketSettings(BaseSettings):
     polymarket_api_secret: str = ""
     polymarket_api_passphrase: str = ""
     manifold_api_key: str = ""
+    kalshi_api_key: str = ""
+    kalshi_private_key_path: str = ""
+    kalshi_demo: bool = False
+    robinhood_access_token: str = ""
 
 
 class BotSettings(BaseSettings):

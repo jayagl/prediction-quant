@@ -12,8 +12,10 @@ from prediction_quant.bot import Bot
 from prediction_quant.config import load_bot_settings, load_market_settings
 from prediction_quant.execution.executor import Executor
 from prediction_quant.markets.base import MarketClient
+from prediction_quant.markets.kalshi import KalshiClient
 from prediction_quant.markets.manifold import ManifoldClient
 from prediction_quant.markets.polymarket import PolymarketClient
+from prediction_quant.markets.robinhood import RobinhoodClient
 from prediction_quant.risk.manager import RiskManager
 from prediction_quant.signals.ema import EMACrossoverSignal
 from prediction_quant.signals.fair_value import FairValueDivergenceSignal
@@ -40,6 +42,16 @@ def _build_clients(market_cfg) -> dict[str, MarketClient]:
         )
     if market_cfg.manifold_api_key:
         clients["manifold"] = ManifoldClient(api_key=market_cfg.manifold_api_key)
+    if market_cfg.kalshi_api_key:
+        clients["kalshi"] = KalshiClient(
+            api_key=market_cfg.kalshi_api_key,
+            private_key_path=market_cfg.kalshi_private_key_path,
+            demo=market_cfg.kalshi_demo,
+        )
+    if market_cfg.robinhood_access_token:
+        clients["robinhood"] = RobinhoodClient(
+            access_token=market_cfg.robinhood_access_token,
+        )
     return clients
 
 
@@ -57,7 +69,11 @@ def cli() -> None:
     help="Specific market IDs to trade. Can be repeated.",
 )
 @click.option("--once", is_flag=True, help="Run a single tick then exit.")
-@click.option("--source", type=click.Choice(["polymarket", "manifold", "all"]), default="all")
+@click.option(
+    "--source",
+    type=click.Choice(["polymarket", "manifold", "kalshi", "robinhood", "all"]),
+    default="all",
+)
 def run(verbose: bool, market_id: tuple[str, ...], once: bool, source: str) -> None:
     """Start the trading bot."""
     _setup_logging(verbose)
